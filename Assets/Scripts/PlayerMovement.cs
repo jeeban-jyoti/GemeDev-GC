@@ -5,195 +5,96 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    float x;
-    float y;
-    float z;
-    public float SensX;
-    float yRotation;
+    [Header("ForMouseInput")]
+    [SerializeField] private float SensX;
+    private float yRotation;
 
 
     [Header("Movement")]
+    [SerializeField] private float MovementSpeed;
+    [SerializeField] private float groundDrag;
+    [SerializeField] private Transform orientation;
+    private float hInput;
+    private float vInput;
+    private Vector3 moveDir;
+    private Rigidbody rb;
 
-    public float MovementSpeed;
 
-    public float groundDrag;
     [Header("GroundCheck")]
-    public float playerHeight;
-    public LayerMask WhatIsGround;
-    bool grounded;
+    [SerializeField] private float playerHeight;
+    [SerializeField] private LayerMask WhatIsGround;
+    private bool grounded;
 
-    public Transform orientation;
-    float hInput;
-    float vInput;
-    Vector3 moveDir;
-    Rigidbody rb;
 
-    public SpawnCharacter spawnner;
-    public ContainerScript containerScript;
-    public GameObject container;
-    // public Vector3 gravity;
-    public int pos = 0;
+    [Header("GameInputHandler")]
 
-    // public GameObject Spawnner;
+    [SerializeField] private GameInput gameInput;
+    private string finalGateTag = "FinalGate"; // Tag of the cube
 
-    public GameInput gameInput;
+    
+    //for final gate
+    private GameObject finalGateObject;
+    private float winRange = 2.7f; // Range within which player wins
 
-    private Vector3 spawningPositon = new Vector3(-0.95f, 12.08f, -30.55f);
 
-    public float rotationSpeed = .01f;
-    private Vector3 v3ForI = new Vector3(0,0,180);
-    private Vector3 v3ForJ = new Vector3(0,0,270);
-    private Vector3 v3ForK = new Vector3(0,0,0);
-    private Vector3 v3ForL = new Vector3(0,0,90);
-    public Vector3 v3Current = new Vector3(0,0,0);
-    public Vector3 v3To = new Vector3(0,0,0);
+    //for spawning
+    [SerializeField] private Vector3 spawningPositon = new Vector3(5.8f, -2f, -35f);
 
-    public Transform cam;
-    public Material[] materials; // Array of materials to rotate
-    private int currentMaterialIndex = 0; // Index of the currently active material
+    public ManageScenes sm;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(pos);
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        // materials = new Material[4];
 
-        gameInput.OnIInteractionAction += GameInput_OnIInteractionAction;
-        gameInput.OnJInteractionAction += GameInput_OnJInteractionAction;
-        //gameInput.OnKInteractionAction += GameInput_OnKInteractionAction;
-        gameInput.OnLInteractionAction += GameInput_OnLInteractionAction;
-    }
-
-    private void GameInput_OnIInteractionAction(object sender, System.EventArgs e) {
-        //I called
-        // Debug.Log("I");
-        // spawnner.SpawnCharacters(2, spawnner, gameInput);
-        //gravity = new Vector3(0, 10f, 0f);
-        transform.position = new Vector3(spawningPositon.x, spawningPositon.y, spawningPositon.z);
-        // transform.rotation = new Vector3(0f, 0f, 180f);
-
-        // Vector3 eulerAngles = new Vector3(0, 0, 180); 
-        // Quaternion rotation = Quaternion.Euler(eulerAngles); 
-        // transform.rotation = rotation;
-        //transform.position = new Vector3(0f, 3f, 0f);
-        RotateTwoSteps();
-
-        v3To = v3ForI;
-
-        //cam.position = new Vector3(cam.position.x, cam.position.y-1.6f,cam.position.z);
-        //cam.rotation = Quaternion.Euler(cam.rotation.x, cam.rotation.y, cam.rotation.z - 180);
-    }
-
-    private void GameInput_OnJInteractionAction(object sender, System.EventArgs e) {
-        //J called
-        // Debug.Log("J");
-        // gravity = new Vector3(-10f, 1f, 0f);
-        transform.position = new Vector3(spawningPositon.x, spawningPositon.y, spawningPositon.z);
-        // transform.rotation = new Vector3(0f, 0f, 180f);
-
-        // Vector3 eulerAngles = new Vector3(0, 0, 270); 
-        // Quaternion rotation = Quaternion.Euler(eulerAngles); 
-        // transform.rotation = rotation;
-        //transform.position = new Vector3(0f, 3f, 0f);
-        RotateAntiClockwise();
-
-        v3To = v3ForJ;
-    }
-
-    // private void GameInput_OnKInteractionAction(object sender, System.EventArgs e) {
-    //     //K called
-    //     // Debug.Log("K");
-    //     // gravity = new Vector3(0f, -10f, 0f);
-    //    transform.position = new Vector3(spawningPositon.x, spawningPositon.y, spawningPositon.z);
-    //     // transform.rotation = new Vector3(0f, 0f, 180f);
-
-    //     // Vector3 eulerAngles = new Vector3(0, 0, 270); 
-    //     // Quaternion rotation = Quaternion.Euler(eulerAngles); 
-    //     // transform.rotation = rotation;
-    //     pos = 2;
-    //     transform.position = new Vector3(0f, 1.5f, 0f);
-
-    //     v3To = v3ForK;
-    // }
-    private void GameInput_OnLInteractionAction(object sender, System.EventArgs e) {
-        //L called
-        // Debug.Log("L");
-        // gravity = new Vector3(10f, 1f, 0f);
-        transform.position = new Vector3(spawningPositon.x, spawningPositon.y, spawningPositon.z);
-        // transform.rotation = new Vector3(0f, 0f, 180f);
-
-        // Vector3 eulerAngles = new Vector3(0, 0, 270); 
-        // Quaternion rotation = Quaternion.Euler(eulerAngles); 
-        // transform.rotation = rotation;
-        //transform.position = new Vector3(0f, 3f, 0f);
-        RotateClockwise();
-
-        v3To = v3ForL;
+        finalGateObject = GameObject.FindGameObjectWithTag(finalGateTag);
+        if(finalGateObject == null) {
+            Debug.LogError("Cube not found with tag: " + finalGateTag);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        // if (Mathf.Abs(v3Current.z - v3To.z) > 0.2f) {
-        //     v3Current = Vector3.Slerp(v3Current, v3To, Time.deltaTime * rotationSpeed);
+        // Check for the gate distance
+        // Debug.Log("Distance from the gate: " + Vector3.Distance(transform.position, finalGateObject.transform.position));
 
-        //     // transform.Rotate(v3Current.x, v3Current.y, v3Current.z, Space.Self);
-        //     transform.eulerAngles = v3Current; 
-        //     // rb.rotation = transform.rotation;
-        //     rb.MoveRotation(transform.rotation);
-        // }
-        Debug.Log(transform.eulerAngles);
+        // Check if the player is within win range of the cube
+        if (distanceBetweenPlayerAndGate() <= winRange)
+        {
+            GameManager.Instance.hasPlayerReached(true);
+        }
         
-        // if(Input.GetKeyDown("i") && pos != 2)
-        // {
-        //     /*Debug.Log(pos);
-        //     spawnner.SpawnCharacters(2);
-        //     //orientation = Object_180.GetComponent<Transform>();
-        //     Destroy(gameObject);*/
-        //     // Instantiate(Object_0, new Vector3(-0.95f, 12.08f, -30.55f), transform.rotation);
-        //     // spawnner.SpawnCharacters(2, spawnner);
-        //     container.RotateContainer(0);
+        GameManager.Instance.hasPlayerReached(false);
 
-        // }
-        // else if(Input.GetKeyDown("j"))
-        // {
-        //     // spawnner.SpawnCharacters(3, spawnner);
-        // }
-        // else if(Input.GetKeyDown("k"))
-        // {
-        //     // spawnner.SpawnCharacters(0, spawnner);
-        // }
-        // else if(Input.GetKeyDown("l"))
-        // {
-        //     // spawnner.SpawnCharacters(1, spawnner);
-        // }
-        
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, WhatIsGround);
 
+        playerRotation();
         MyInput();
         SpeedControl();
-        playerRotation();
 
-        if(grounded)
+        if(grounded) {
             rb.drag = groundDrag;
-        else
+        } else {
             rb.drag = 0;
+        }
+    }
+
+    public float distanceBetweenPlayerAndGate() {
+        return Vector3.Distance(transform.position, finalGateObject.transform.position);
     }
 
     void FixedUpdate() {
-        MovePlayer();
-
-        //rb.AddForce(gravity.normalized * MovementSpeed * 10f, ForceMode.Force);
+        if (grounded) {
+            MovePlayer();
+        }
     }
 
     private void MyInput(){
         hInput = Input.GetAxis("Horizontal");
         vInput = Input.GetAxis("Vertical");
-        Debug.Log("h =" + hInput + "v=" + vInput);
     }
 
     private void MovePlayer(){
@@ -211,41 +112,23 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // TODO: Handle this using gameinput
     void playerRotation(){
         float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * SensX;
         yRotation += mouseX;
-        transform.rotation = Quaternion.Euler(0, yRotation, 0);
+        Vector3 targetRotation = new Vector3(transform.rotation.x, yRotation, transform.rotation.z);
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(targetRotation), MovementSpeed * Time.deltaTime);
+        // transform.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
-    void RotateClockwise()
-    {
-        currentMaterialIndex = (currentMaterialIndex + 1) % materials.Length;
-        ApplyMaterials();
+
+    // Refactored code:
+    public void spawnAtSpawnPosition() {
+        transform.position = new Vector3(spawningPositon.x, spawningPositon.y, spawningPositon.z);
     }
 
-    void RotateAntiClockwise()
-    {
-        currentMaterialIndex = (currentMaterialIndex - 1 + materials.Length) % materials.Length;
-        ApplyMaterials();
+    private void OnDestroy() {
+        sm.onGameOver();    
     }
-
-    void RotateTwoSteps()
-    {
-        currentMaterialIndex = (currentMaterialIndex + 2) % materials.Length;
-        ApplyMaterials();
-    }
-
-    void ApplyMaterials()
-    {
-        Renderer bottomWall = container.transform.GetChild(0).GetComponent<Renderer>();
-        Renderer leftWall = container.transform.GetChild(1).GetComponent<Renderer>();
-        Renderer topWall = container.transform.GetChild(2).GetComponent<Renderer>();
-        Renderer rightWall = container.transform.GetChild(3).GetComponent<Renderer>();
-
-        bottomWall.material = materials[currentMaterialIndex];
-        leftWall.material = materials[(currentMaterialIndex + 1) % materials.Length];
-        topWall.material = materials[(currentMaterialIndex + 2) % materials.Length];
-        rightWall.material = materials[(currentMaterialIndex + 3) % materials.Length];
-    }
-
 }
