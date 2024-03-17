@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float destroyRange = 1.5f;
     [SerializeField] private float detectionRange = 8f;
 
-    [SerializeField] private Vector3 spawningPositon;
+    [SerializeField] private Transform spawn;
 
     public ManageScenes sm;
 
@@ -64,6 +64,6 @@ public class Enemy : MonoBehaviour
     }
 
     public void spawnAtSpawnPosition() {
-        transform.position = new Vector3(spawningPositon.x, spawningPositon.y, spawningPositon.z);
+        transform.position = spawn.transform.position;
     }
 }

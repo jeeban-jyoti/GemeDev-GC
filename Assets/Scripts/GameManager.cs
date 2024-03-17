@@ -88,13 +88,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void RotateClockwise()
+    public void RotateClockwise()
     {
         currentMaterialIndex = (currentMaterialIndex + 1) % materials.Length;
         ApplyMaterials();
     }
 
-    void RotateAntiClockwise()
+    public void RotateAntiClockwise()
     {
         currentMaterialIndex = (currentMaterialIndex - 1 + materials.Length) % materials.Length;
         ApplyMaterials();
