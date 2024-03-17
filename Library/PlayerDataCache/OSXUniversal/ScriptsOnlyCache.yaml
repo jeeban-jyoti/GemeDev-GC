@@ -11,12 +11,17 @@ ScriptsOnlyBuild:
     - GameManager
     - GameStart
     - MainMenuUI
+    - ManageScenes
     - PlayerCam
+    - PlayerCamMovement
     - PlayerMovement
     Unity.InputSystem.dll:
+    - UnityEngine.InputSystem.InputActionAsset
+    - UnityEngine.InputSystem.InputActionReference
     - UnityEngine.InputSystem.InputSettings
     - UnityEngine.InputSystem.InputSystemObject
     - UnityEngine.InputSystem.RemoteInputPlayerConnection
+    - UnityEngine.InputSystem.UI.InputSystemUIInputModule
     Unity.PlasticSCM.Editor.dll:
     - Unity.PlasticSCM.Editor.PlasticWindow
     Unity.Rider.Editor.dll:
@@ -27,7 +32,6 @@ ScriptsOnlyBuild:
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
-    - UnityEngine.EventSystems.StandaloneInputModule
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
@@ -35,6 +39,12 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.RawImage
     - UnityEngine.UI.Text
   serializedClasses:
+    Unity.InputSystem:
+    - UnityEngine.InputSystem.InputAction
+    - UnityEngine.InputSystem.InputActionMap
+    - UnityEngine.InputSystem.InputBinding
+    - UnityEngine.InputSystem.InputControlScheme
+    - UnityEngine.InputSystem.InputControlScheme/DeviceRequirement
     UnityEngine.CoreModule:
     - UnityEngine.Events.ArgumentCache
     - UnityEngine.Events.PersistentCallGroup
@@ -48,6 +58,18 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Navigation
     - UnityEngine.UI.SpriteState
   methodsToPreserve:
+  - assembly: Assembly-CSharp
+    fullTypeName: GAMEOVERSCRIPT
+    methodName: Quit
+  - assembly: Assembly-CSharp
+    fullTypeName: ManageScenes
+    methodName: onStartGame
+  - assembly: Assembly-CSharp
+    fullTypeName: ManageScenes
+    methodName: onStartGame
+  - assembly: Assembly-CSharp
+    fullTypeName: GameStart
+    methodName: StartGame
   - assembly: Assembly-CSharp
     fullTypeName: GAMEOVERSCRIPT
     methodName: Quit
@@ -125,13 +147,21 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
+      Script: {instanceID: 1570}
+    - Class: 114
       Script: {instanceID: 1832}
+    - Class: 114
+      Script: {instanceID: 2402}
     - Class: 114
       Script: {instanceID: 2746}
     - Class: 114
       Script: {instanceID: 2850}
     - Class: 114
       Script: {instanceID: 2964}
+    - Class: 114
+      Script: {instanceID: 3290}
+    - Class: 114
+      Script: {instanceID: 4002}
     - Class: 114
       Script: {instanceID: 5064}
     - Class: 114
@@ -145,7 +175,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 6228}
     - Class: 114
-      Script: {instanceID: 6780}
+      Script: {instanceID: 7208}
+    - Class: 114
+      Script: {instanceID: 7976}
     - Class: 114
       Script: {instanceID: 38908}
     - Class: 114
@@ -154,6 +186,16 @@ ScriptsOnlyBuild:
       Script: {instanceID: 53706}
     - Class: 114
       Script: {instanceID: 57178}
+    - Class: 114
+      Script: {instanceID: 99342}
+    - Class: 114
+      Script: {instanceID: 99358}
+    - Class: 114
+      Script: {instanceID: 118434}
+    - Class: 114
+      Script: {instanceID: 170220}
+    - Class: 114
+      Script: {instanceID: 259984}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -167,6 +209,8 @@ ScriptsOnlyBuild:
     - Class: 195
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
       Script: {instanceID: 0}
     - Class: 222
       Script: {instanceID: 0}
@@ -200,13 +244,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 2402}
     - Class: 114
+      Script: {instanceID: 2746}
+    - Class: 114
       Script: {instanceID: 2964}
     - Class: 114
       Script: {instanceID: 3290}
     - Class: 114
+      Script: {instanceID: 4002}
+    - Class: 114
       Script: {instanceID: 5878}
     - Class: 114
       Script: {instanceID: 6228}
+    - Class: 114
+      Script: {instanceID: 7208}
+    - Class: 114
+      Script: {instanceID: 7976}
     - Class: 114
       Script: {instanceID: 99342}
     - Class: 114
@@ -896,7 +948,7 @@ ScriptsOnlyBuild:
     className: PlayerCam
   - hash:
       serializedVersion: 2
-      Hash: 92da0583f8f8f649e57e4312a6567f56
+      Hash: 02553550395aab745b6ad022b88f6d0e
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: PlayerMovement
@@ -1052,7 +1104,7 @@ ScriptsOnlyBuild:
     className: NavMeshModifierVolume
   - hash:
       serializedVersion: 2
-      Hash: 6875ee70fefaaccd4c2528d35b598a91
+      Hash: 2ec202cb7fdea9932f8dbddc8f4624a1
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Enemy
@@ -1088,7 +1140,7 @@ ScriptsOnlyBuild:
     className: GroupTrack
   - hash:
       serializedVersion: 2
-      Hash: 36e83ef92e4d0e2c5959108db058fbbf
+      Hash: 4ee154df8711b0ce31f429773f6ad825
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: GameManager
@@ -1626,9 +1678,21 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: MainMenuUI
+  - hash:
+      serializedVersion: 2
+      Hash: 4da6af63d8636e0d78ed1065ee462d1c
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: ManageScenes
+  - hash:
+      serializedVersion: 2
+      Hash: 387a58d3fa110763bc55853b4856c337
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: PlayerCamMovement
   platform: 2
   scenePathNames:
-  - Assets/Scenes/StartMenu.unity
   - Assets/Scenes/Level_Maze_1.unity
+  - Assets/Scenes/StartMenu.unity
   - Assets/Scenes/FinalScene.unity
-  playerPath: /Users/jeeban_jyoti_patra/Desktop/Game Projects/3D_Gravity_Change/Build01.app
+  playerPath: /Users/jeeban_jyoti_patra/Desktop/Game Projects/GravShift.app

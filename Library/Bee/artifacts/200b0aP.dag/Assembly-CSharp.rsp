@@ -321,8 +321,10 @@
 "Assets/Scripts/GameInput.cs"
 "Assets/Scripts/GameManager.cs"
 "Assets/Scripts/MainMenuUI.cs"
+"Assets/Scripts/ManageScenes.cs"
 "Assets/Scripts/MoveCamera.cs"
 "Assets/Scripts/PlayerCam.cs"
+"Assets/Scripts/PlayerCamMovement.cs"
 "Assets/Scripts/PlayerMovement.cs"
 -langversion:9.0
 
