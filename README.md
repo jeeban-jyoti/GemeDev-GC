@@ -14,3 +14,5 @@ Assets Used:-
 3. https://assetstore.unity.com/packages/2d/textures-materials/free-stylized-pbr-textures-pack-111778
 4. https://youtu.be/AGyetQlCmXw?si=rMhOpy5X5UU36uUv
 5. https://youtu.be/2u9yz5SW_pk?si=VmkbJc0RBCc48OAh
+
+Note : The project was build in MAC , so for better user experience use MACOS. We are providing both Windows executable and MAC executable.
